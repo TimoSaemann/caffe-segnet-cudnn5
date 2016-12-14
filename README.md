@@ -1,4 +1,4 @@
-# Caffe SegNet 
+# Caffe SegNet cuDNN5
 **This is a modified version of [Caffe](https://github.com/BVLC/caffe) which supports the [SegNet architecture](http://mi.eng.cam.ac.uk/projects/segnet/)**
 
 As described in **SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation** Vijay Badrinarayanan, Alex Kendall and Roberto Cipolla [http://arxiv.org/abs/1511.00561]
@@ -9,7 +9,7 @@ This repository should work fine when it comes to testing segnet. Training SegNe
 
 Since the original caffe-segnet supports just cuDNN v3, which is not supported for new pascal based GPUs, it was possible to decrease the inference time by 25 % to 35 % with caffe-segnet-cudnn5 using Titan X Pascal.
 
-I recommend to use my trained weights for semantic segmenation of traffic scenes, which you can find in segnet model zoo: https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Example_Models/segnet_model_zoo.md
+I recommend to use my trained weights (CityScapes Model) for semantic segmenation of traffic scenes, which you can find in segnet model zoo: https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Example_Models/segnet_model_zoo.md
 
 ## Publications
 

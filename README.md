@@ -1,17 +1,19 @@
-# Caffe SegNet
+# Caffe SegNet 
 **This is a modified version of [Caffe](https://github.com/BVLC/caffe) which supports the [SegNet architecture](http://mi.eng.cam.ac.uk/projects/segnet/)**
 
 As described in **SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation** Vijay Badrinarayanan, Alex Kendall and Roberto Cipolla [http://arxiv.org/abs/1511.00561]
 
-Please refer to original caffe-segnet for tutorial and a guide how to use it (https://github.com/alexgkendall/caffe-segnet).
+Please refer to Alex Kendalls caffe-segnet for tutorial and a guide how to use it (https://github.com/alexgkendall/caffe-segnet).
 
-This repository should work fine when it comes to test segnet. Train segnet should be work fine as well, but it is not tested yet. If you encounter issues feel free to open an issue or to submit an pull request for fix.
+This repository should work fine when it comes to testing segnet. Training SegNet should be work fine as well, but it is not tested yet. If you encounter issues feel free to open an issue or to submit a pull request for fix.
 
-Since the origin caffe-segnet supports just cuDNN v3, which is not supported for new pascal based GPUs, it was possible to decrease the inference time by 25 % to 35 % with caffe-segnet-cudnn5 using (Titan X Pascal).
+Since the original caffe-segnet supports just cuDNN v3, which is not supported for new pascal based GPUs, it was possible to decrease the inference time by 25 % to 35 % with caffe-segnet-cudnn5 using Titan X Pascal.
+
+I recommend to use my trained weights for semantic segmenation of traffic scenes, which you can find in segnet model zoo: https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Example_Models/segnet_model_zoo.md
 
 ## Publications
 
-If you use this software in your research, please cite our publications:
+If you use this software in your research, please cite their publications:
 
 http://arxiv.org/abs/1511.02680
 Alex Kendall, Vijay Badrinarayanan and Roberto Cipolla "Bayesian SegNet: Model Uncertainty in Deep Convolutional Encoder-Decoder Architectures for Scene Understanding." arXiv preprint arXiv:1511.02680, 2015.

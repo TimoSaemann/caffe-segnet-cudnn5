@@ -5,7 +5,7 @@ As described in **SegNet: A Deep Convolutional Encoder-Decoder Architecture for 
 
 Please refer to Alex Kendalls caffe-segnet for tutorial and a guide how to use it (https://github.com/alexgkendall/caffe-segnet).
 
-This repository should work fine when it comes to testing segnet. Training SegNet should be work fine as well, but it is not tested yet. If you encounter issues feel free to open an issue or to submit a pull request for fix.
+This repository should work fine when it comes to testing segnet. Training SegNet should work fine as well, but it is not tested yet. If you encounter issues feel free to open an issue or to submit a pull request for fix.
 
 Since the original caffe-segnet supports just cuDNN v3, which is not supported for new pascal based GPUs, it was possible to decrease the inference time by 25 % to 35 % with caffe-segnet-cudnn5 using Titan X Pascal.
 

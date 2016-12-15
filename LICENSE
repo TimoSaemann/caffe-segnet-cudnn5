@@ -1,11 +1,11 @@
 COPYRIGHT
 
 All contributions by the University of California:
-Copyright (c) 2014, 2015, The Regents of the University of California (Regents)
+Copyright (c) 2014, The Regents of the University of California (Regents)
 All rights reserved.
 
 All other contributions:
-Copyright (c) 2014, 2015, the respective contributors
+Copyright (c) 2014, the respective contributors
 All rights reserved.
 
 Caffe uses a shared copyright model: each contributor holds copyright over
@@ -17,14 +17,17 @@ committed.
 
 LICENSE
 
+**All contributions by Kesar Breen and Alex Kendall are licensed under a**
+[Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/).
+
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
+   list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+   and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED

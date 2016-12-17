@@ -306,7 +306,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 147 (last added: recurrent_param)
+// LayerParameter next available layer-specific ID: 148 (last added: dense_image_data_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -405,6 +405,7 @@ message LayerParameter {
   optional WindowDataParameter window_data_param = 129;
   optional UpsampleParameter upsample_param = 147;
   optional BNParameter bn_param = 45;
+  optional DenseImageDataParameter dense_image_data_param = 46;
 }
 
 // Message that stores parameters used to apply transformation
@@ -456,7 +457,9 @@ message LossParameter {
   // Deprecated.  Ignored if normalization is specified.  If normalization
   // is not specified, then setting this to false will be equivalent to
   // normalization = BATCH_SIZE to be consistent with previous behavior.
+  optional bool weight_by_label_freqs = 4 [default = false]; 
   optional bool normalize = 2;
+  repeated float class_weighting = 5;
 }
 
 // Messages that store parameters used by individual layer types follow, in
@@ -671,6 +674,30 @@ message DataParameter {
   // Prefetch queue (Number of batches to prefetch to host memory, increase if
   // data access bandwidth varies).
   optional uint32 prefetch = 10 [default = 4];
+}
+
+message DenseImageDataParameter {
+  // Specify the data source file.
+  optional string source = 1;
+  // Specify the batch size.
+  optional uint32 batch_size = 2;
+  // The rand_skip variable is for the data layer to skip a few data points
+  // to avoid all asynchronous sgd clients to start at the same point. The skip
+  // point would be set as rand_skip * rand(0,1). Note that rand_skip should not
+  // be larger than the number of keys in the database.
+  optional uint32 rand_skip = 3 [default = 0];
+  // Whether or not ImageLayer should shuffle the list of files at every epoch.
+  optional bool shuffle = 4 [default = false];
+  // It will also resize images if new_height or new_width are not zero.
+  optional uint32 new_height = 5 [default = 0];
+  optional uint32 new_width = 6 [default = 0];
+  // Specify if the images are color or gray
+  optional bool is_color = 7 [default = true];
+  optional string mean_file = 8;
+  optional string root_folder = 9 [default = ""];
+  optional bool mirror = 10 [default = false];
+  optional uint32 crop_width = 11 [default = 0];
+  optional uint32 crop_height = 12 [default = 0];
 }
 
 message DropoutParameter {

@@ -50,7 +50,6 @@ class DataTransformer {
   void Transform(const vector<Datum> & datum_vector,
                 Blob<Dtype>* transformed_blob);
 
-#ifdef USE_OPENCV
   /**
    * @brief Applies the transformation defined in the data layer's
    * transform_param block to a vector of Mat.
@@ -73,9 +72,12 @@ class DataTransformer {
    * @param transformed_blob
    *    This is destination blob. It can be part of top blob's data if
    *    set_cpu_data() is used. See image_data_layer.cpp for an example.
+   * @param preserve_pixel_vals
+   *    Use with dense label images to preserve the input pixel values
+   *    which would be labels (and thus cannot be interpolated or scaled).
    */
-  void Transform(const cv::Mat& cv_img, Blob<Dtype>* transformed_blob);
-#endif  // USE_OPENCV
+  void Transform(const cv::Mat& cv_img, Blob<Dtype>* transformed_blob,
+                 bool preserve_pixel_vals = false);
 
   /**
    * @brief Applies the same transformation defined in the data layer's
@@ -115,7 +117,6 @@ class DataTransformer {
    * @param mat_vector
    *    A vector of Mat containing the data to be transformed.
    */
-#ifdef USE_OPENCV
   vector<int> InferBlobShape(const vector<cv::Mat> & mat_vector);
   /**
    * @brief Infers the shape of transformed_blob will have when
@@ -125,7 +126,6 @@ class DataTransformer {
    *    cv::Mat containing the data to be transformed.
    */
   vector<int> InferBlobShape(const cv::Mat& cv_img);
-#endif  // USE_OPENCV
 
  protected:
    /**
@@ -152,3 +152,4 @@ class DataTransformer {
 }  // namespace caffe
 
 #endif  // CAFFE_DATA_TRANSFORMER_HPP_
+

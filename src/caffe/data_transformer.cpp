@@ -1,6 +1,4 @@
-#ifdef USE_OPENCV
 #include <opencv2/core/core.hpp>
-#endif  // USE_OPENCV
 
 #include <string>
 #include <vector>
@@ -21,9 +19,7 @@ DataTransformer<Dtype>::DataTransformer(const TransformationParameter& param,
     CHECK_EQ(param_.mean_value_size(), 0) <<
       "Cannot specify mean_file and mean_value at the same time";
     const string& mean_file = param.mean_file();
-    if (Caffe::root_solver()) {
-      LOG(INFO) << "Loading mean file from: " << mean_file;
-    }
+    LOG(INFO) << "Loading mean file from: " << mean_file;
     BlobProto blob_proto;
     ReadProtoFromBinaryFileOrDie(mean_file.c_str(), &blob_proto);
     data_mean_.FromProto(blob_proto);
@@ -126,14 +122,12 @@ void DataTransformer<Dtype>::Transform(const Datum& datum,
   }
 }
 
-
 template<typename Dtype>
 void DataTransformer<Dtype>::Transform(const Datum& datum,
                                        Blob<Dtype>* transformed_blob) {
   // If datum is encoded, decoded and transform the cv::image.
   if (datum.encoded()) {
-#ifdef USE_OPENCV
-    CHECK(!(param_.force_color() && param_.force_gray()))
+    CHECK(!param_.force_color() && !param_.force_gray())
         << "cannot set both force_color and force_gray";
     cv::Mat cv_img;
     if (param_.force_color() || param_.force_gray()) {
@@ -144,9 +138,6 @@ void DataTransformer<Dtype>::Transform(const Datum& datum,
     }
     // Transform the cv::image into blob.
     return Transform(cv_img, transformed_blob);
-#else
-    LOG(FATAL) << "Encoded datum requires OpenCV; compile with USE_OPENCV.";
-#endif  // USE_OPENCV
   } else {
     if (param_.force_color() || param_.force_gray()) {
       LOG(ERROR) << "force_color and force_gray only for encoded datum";
@@ -201,7 +192,6 @@ void DataTransformer<Dtype>::Transform(const vector<Datum> & datum_vector,
   }
 }
 
-#ifdef USE_OPENCV
 template<typename Dtype>
 void DataTransformer<Dtype>::Transform(const vector<cv::Mat> & mat_vector,
                                        Blob<Dtype>* transformed_blob) {
@@ -224,8 +214,8 @@ void DataTransformer<Dtype>::Transform(const vector<cv::Mat> & mat_vector,
 
 template<typename Dtype>
 void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
-                                       Blob<Dtype>* transformed_blob) {
-  const int crop_size = param_.crop_size();
+                                       Blob<Dtype>* transformed_blob,
+                                       bool preserve_pixel_vals) {
   const int img_channels = cv_img.channels();
   const int img_height = cv_img.rows;
   const int img_width = cv_img.cols;
@@ -242,8 +232,8 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
   CHECK_GE(num, 1);
 
   CHECK(cv_img.depth() == CV_8U) << "Image data type must be unsigned byte";
-
-  const Dtype scale = param_.scale();
+  const int crop_size = param_.crop_size();
+  const Dtype scale = preserve_pixel_vals ? 1 : param_.scale();
   const bool do_mirror = param_.mirror() && Rand(2);
   const bool has_mean_file = param_.has_mean_file();
   const bool has_mean_values = mean_values_.size() > 0;
@@ -253,13 +243,13 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
   CHECK_GE(img_width, crop_size);
 
   Dtype* mean = NULL;
-  if (has_mean_file) {
+  if (has_mean_file && !preserve_pixel_vals) {
     CHECK_EQ(img_channels, data_mean_.channels());
     CHECK_EQ(img_height, data_mean_.height());
     CHECK_EQ(img_width, data_mean_.width());
     mean = data_mean_.mutable_cpu_data();
   }
-  if (has_mean_values) {
+  if (has_mean_values && !preserve_pixel_vals) {
     CHECK(mean_values_.size() == 1 || mean_values_.size() == img_channels) <<
      "Specify either 1 mean_value or as many as channels: " << img_channels;
     if (img_channels > 1 && mean_values_.size() == 1) {
@@ -307,12 +297,12 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
         }
         // int top_index = (c * height + h) * width + w;
         Dtype pixel = static_cast<Dtype>(ptr[img_index++]);
-        if (has_mean_file) {
+        if (has_mean_file && !preserve_pixel_vals) {
           int mean_index = (c * img_height + h_off + h) * img_width + w_off + w;
           transformed_data[top_index] =
             (pixel - mean[mean_index]) * scale;
         } else {
-          if (has_mean_values) {
+          if (has_mean_values && !preserve_pixel_vals) {
             transformed_data[top_index] =
               (pixel - mean_values_[c]) * scale;
           } else {
@@ -323,7 +313,6 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
     }
   }
 }
-#endif  // USE_OPENCV
 
 template<typename Dtype>
 void DataTransformer<Dtype>::Transform(Blob<Dtype>* input_blob,
@@ -441,8 +430,7 @@ void DataTransformer<Dtype>::Transform(Blob<Dtype>* input_blob,
 template<typename Dtype>
 vector<int> DataTransformer<Dtype>::InferBlobShape(const Datum& datum) {
   if (datum.encoded()) {
-#ifdef USE_OPENCV
-    CHECK(!(param_.force_color() && param_.force_gray()))
+    CHECK(!param_.force_color() && !param_.force_gray())
         << "cannot set both force_color and force_gray";
     cv::Mat cv_img;
     if (param_.force_color() || param_.force_gray()) {
@@ -453,10 +441,8 @@ vector<int> DataTransformer<Dtype>::InferBlobShape(const Datum& datum) {
     }
     // InferBlobShape using the cv::image.
     return InferBlobShape(cv_img);
-#else
-    LOG(FATAL) << "Encoded datum requires OpenCV; compile with USE_OPENCV.";
-#endif  // USE_OPENCV
   }
+
   const int crop_size = param_.crop_size();
   const int datum_channels = datum.channels();
   const int datum_height = datum.height();
@@ -486,7 +472,6 @@ vector<int> DataTransformer<Dtype>::InferBlobShape(
   return shape;
 }
 
-#ifdef USE_OPENCV
 template<typename Dtype>
 vector<int> DataTransformer<Dtype>::InferBlobShape(const cv::Mat& cv_img) {
   const int crop_size = param_.crop_size();
@@ -517,7 +502,6 @@ vector<int> DataTransformer<Dtype>::InferBlobShape(
   shape[0] = num;
   return shape;
 }
-#endif  // USE_OPENCV
 
 template <typename Dtype>
 void DataTransformer<Dtype>::InitRand() {

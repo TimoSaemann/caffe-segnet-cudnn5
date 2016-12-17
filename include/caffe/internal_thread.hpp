@@ -30,6 +30,8 @@ class InternalThread {
 
   /** Will not return until the internal thread has exited. */
   void StopInternalThread();
+  bool WaitForInternalThreadToExit();
+  bool StartInternalThread2();
 
   bool is_started() const;
 

@@ -1,7 +1,10 @@
 #include <algorithm>
 #include <cfloat>
 #include <vector>
+#include <iostream>
 
+#include "caffe/layer.hpp"
+#include "caffe/layer_factory.hpp"
 #include "caffe/layers/softmax_loss_layer.hpp"
 #include "caffe/util/math_functions.hpp"
 
@@ -25,13 +28,19 @@ void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
   if (has_ignore_label_) {
     ignore_label_ = this->layer_param_.loss_param().ignore_label();
   }
-  if (!this->layer_param_.loss_param().has_normalization() &&
-      this->layer_param_.loss_param().has_normalize()) {
-    normalization_ = this->layer_param_.loss_param().normalize() ?
-                     LossParameter_NormalizationMode_VALID :
-                     LossParameter_NormalizationMode_BATCH_SIZE;
-  } else {
-    normalization_ = this->layer_param_.loss_param().normalization();
+  normalize_ = this->layer_param_.loss_param().normalize();
+  weight_by_label_freqs_ =
+    this->layer_param_.loss_param().weight_by_label_freqs();
+  
+  if (weight_by_label_freqs_) {
+    vector<int> count_shape(1, this->layer_param_.loss_param().class_weighting_size());
+    label_counts_.Reshape(count_shape);
+    CHECK_EQ(this->layer_param_.loss_param().class_weighting_size(), bottom[0]->channels())
+		<< "Number of class weight values does not match the number of classes.";
+    float* label_count_data = label_counts_.mutable_cpu_data();
+    for (int i = 0; i < this->layer_param_.loss_param().class_weighting_size(); i++) {
+        label_count_data[i] = this->layer_param_.loss_param().class_weighting(i);
+    }
   }
 }
 
@@ -53,36 +62,10 @@ void SoftmaxWithLossLayer<Dtype>::Reshape(
     // softmax output
     top[1]->ReshapeLike(*bottom[0]);
   }
-}
-
-template <typename Dtype>
-Dtype SoftmaxWithLossLayer<Dtype>::get_normalizer(
-    LossParameter_NormalizationMode normalization_mode, int valid_count) {
-  Dtype normalizer;
-  switch (normalization_mode) {
-    case LossParameter_NormalizationMode_FULL:
-      normalizer = Dtype(outer_num_ * inner_num_);
-      break;
-    case LossParameter_NormalizationMode_VALID:
-      if (valid_count == -1) {
-        normalizer = Dtype(outer_num_ * inner_num_);
-      } else {
-        normalizer = Dtype(valid_count);
-      }
-      break;
-    case LossParameter_NormalizationMode_BATCH_SIZE:
-      normalizer = Dtype(outer_num_);
-      break;
-    case LossParameter_NormalizationMode_NONE:
-      normalizer = Dtype(1);
-      break;
-    default:
-      LOG(FATAL) << "Unknown normalization mode: "
-          << LossParameter_NormalizationMode_Name(normalization_mode);
+  if (weight_by_label_freqs_) {
+    CHECK_EQ(this->layer_param_.loss_param().class_weighting_size(), bottom[0]->channels())
+		<< "Number of class weight values does not match the number of classes.";
   }
-  // Some users will have no labels for some examples in order to 'turn off' a
-  // particular loss in a multi-task setup. The max prevents NaNs in that case.
-  return std::max(Dtype(1.0), normalizer);
 }
 
 template <typename Dtype>
@@ -103,12 +86,22 @@ void SoftmaxWithLossLayer<Dtype>::Forward_cpu(
       }
       DCHECK_GE(label_value, 0);
       DCHECK_LT(label_value, prob_.shape(softmax_axis_));
-      loss -= log(std::max(prob_data[i * dim + label_value * inner_num_ + j],
-                           Dtype(FLT_MIN)));
+      const int idx = i * dim + label_value * inner_num_ + j;
+      if (weight_by_label_freqs_) {
+        const float* label_count_data = label_counts_.cpu_data();
+        loss -= log(std::max(prob_data[idx], Dtype(FLT_MIN)))
+            * static_cast<Dtype>(label_count_data[label_value]);
+      } else {
+        loss -= log(std::max(prob_data[idx], Dtype(FLT_MIN)));
+      }
       ++count;
     }
   }
-  top[0]->mutable_cpu_data()[0] = loss / get_normalizer(normalization_, count);
+  if (normalize_) {
+    top[0]->mutable_cpu_data()[0] = loss / count;
+  } else {
+    top[0]->mutable_cpu_data()[0] = loss / outer_num_;
+  }
   if (top.size() == 2) {
     top[1]->ShareData(prob_);
   }
@@ -128,6 +121,8 @@ void SoftmaxWithLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const Dtype* label = bottom[1]->cpu_data();
     int dim = prob_.count() / outer_num_;
     int count = 0;
+    const float* label_count_data = 
+        weight_by_label_freqs_ ? label_counts_.cpu_data() : NULL;
     for (int i = 0; i < outer_num_; ++i) {
       for (int j = 0; j < inner_num_; ++j) {
         const int label_value = static_cast<int>(label[i * inner_num_ + j]);
@@ -136,15 +131,24 @@ void SoftmaxWithLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
             bottom_diff[i * dim + c * inner_num_ + j] = 0;
           }
         } else {
-          bottom_diff[i * dim + label_value * inner_num_ + j] -= 1;
+          const int idx = i * dim + label_value * inner_num_ + j;
+          bottom_diff[idx] -= 1;
+          if (weight_by_label_freqs_) {
+            for (int c = 0; c < bottom[0]->shape(softmax_axis_); ++c) {
+              bottom_diff[i * dim + c * inner_num_ + j] *= static_cast<Dtype>(label_count_data[label_value]);
+            }
+          }
           ++count;
         }
       }
     }
     // Scale gradient
-    Dtype loss_weight = top[0]->cpu_diff()[0] /
-                        get_normalizer(normalization_, count);
-    caffe_scal(prob_.count(), loss_weight, bottom_diff);
+    const Dtype loss_weight = top[0]->cpu_diff()[0];
+    if (normalize_) {
+      caffe_scal(prob_.count(), loss_weight / count, bottom_diff);
+    } else {
+      caffe_scal(prob_.count(), loss_weight / outer_num_, bottom_diff);
+    }
   }
 }
 

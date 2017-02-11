@@ -453,13 +453,13 @@ message LossParameter {
   }
   // For historical reasons, the default normalization for
   // SigmoidCrossEntropyLoss is BATCH_SIZE and *not* VALID.
-  optional NormalizationMode normalization = 3 [default = VALID];
+  optional NormalizationMode normalization = 5 [default = VALID];
   // Deprecated.  Ignored if normalization is specified.  If normalization
   // is not specified, then setting this to false will be equivalent to
   // normalization = BATCH_SIZE to be consistent with previous behavior.
-  optional bool weight_by_label_freqs = 4 [default = false]; 
-  optional bool normalize = 2;
-  repeated float class_weighting = 5;
+  optional bool weight_by_label_freqs = 3 [default = false]; 
+  optional bool normalize = 2 [default = true];
+  repeated float class_weighting = 4;
 }
 
 // Messages that store parameters used by individual layer types follow, in

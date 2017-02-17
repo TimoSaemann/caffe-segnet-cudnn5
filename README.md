@@ -9,6 +9,9 @@ Since the original caffe-segnet supports just cuDNN v2, which is not supported f
 
 I recommend to use my trained weights (CityScapes Model) for semantic segmenation of traffic scenes, which you can find in segnet model zoo: https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Example_Models/segnet_model_zoo.md
 
+If you like to use SegNet with C++, the test_segmentation.cpp might be helpful. 
+https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Scripts/test_segmentation.cpp
+
 ## Publications
 
 If you use this software in your research, please cite their publications:

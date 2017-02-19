@@ -10,7 +10,7 @@
 #include "caffe/layer.hpp"
 #include "caffe/proto/caffe.pb.h"
 
-#include "caffe/layers/base_data_layer.hpp"
+#include "caffe/data_layers.hpp"
 
 namespace caffe {
 

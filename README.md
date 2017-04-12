@@ -12,6 +12,9 @@ I recommend to use my trained weights (CityScapes Model) for semantic segmenatio
 If you like to use SegNet with C++, the test_segmentation.cpp might be helpful. 
 https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Scripts/test_segmentation.cpp
 
+## News
+cuDNN v.6 has been released. I have tested it. It doesn't bring any noticeable improvements for SegNet. For that reason I will not update the repository to cuDNN6.
+
 ## Publications
 
 If you use this software in your research, please cite their publications:

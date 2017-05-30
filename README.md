@@ -15,7 +15,10 @@ If you like to use SegNet with C++, the test_segmentation.cpp might be helpful.
 https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Scripts/test_segmentation.cpp
 
 ## News
-* Speed up SegNet by merging batch normalization and convolutional layer with BN-absorber.py in the script folder.
+
+* If SegNet is too slow for you, try out the [ENet](https://github.com/TimoSaemann/ENet) in Caffe. It's much faster! (May the 30th, 2017)
+
+* Speed up SegNet by merging batch normalization and convolutional layer with BN-absorber.py in the script folder. (May the 12th, 2017)
 
 * cuDNN v.6 has been released. I have tested it using Titan X Pascal. It doesn't bring any noticeable improvements for SegNet. For that reason I will not update the repository to cuDNN6.
 

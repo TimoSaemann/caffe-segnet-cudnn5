@@ -1,10 +1,11 @@
-FROM nvidia/cuda:7.5-cudnn5-devel-ubuntu14.04
+FROM nvidia/cuda:8.0-cudnn5-devel-ubuntu16.04
 MAINTAINER caffe-maint@googlegroups.com
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         cmake \
         git \
+        vim \
         wget \
         libatlas-base-dev \
         libboost-all-dev \
@@ -20,7 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python-dev \
         python-numpy \
         python-pip \
-        python-scipy && \
+        python-scipy \
+        python-tk  && \
     rm -rf /var/lib/apt/lists/*
 
 ENV CAFFE_ROOT=/opt/caffe
@@ -29,7 +31,10 @@ WORKDIR $CAFFE_ROOT
 # FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
 ENV CLONE_TAG=master
 
-RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
+RUN pip install --upgrade pip
+RUN pip install setuptools
+
+RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/TimoSaemann/caffe-segnet-cudnn5 . && \
     for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
     mkdir build && cd build && \
     cmake -DUSE_CUDNN=1 .. && \

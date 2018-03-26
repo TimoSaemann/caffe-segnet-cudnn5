@@ -14,7 +14,13 @@ If you like to speed up SegNet even further, you can run the BN-absorber.py scri
 If you like to use SegNet with C++, the test_segmentation.cpp might be helpful. 
 https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Scripts/test_segmentation.cpp
 
+## Installation
+
+To install, follow the instructions located [here](https://github.com/BVLC/caffe/wiki/Ubuntu-16.04-Installation-Guide).
+
+
 ## News
+
 
 * If SegNet is too slow for you, try out the [ENet](https://github.com/TimoSaemann/ENet) in Caffe. It's much faster! (May the 30th, 2017)
 
@@ -23,6 +29,7 @@ https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Scripts/test_segment
 * cuDNN v.6 has been released. I have tested it using Titan X Pascal. It doesn't bring any noticeable improvements for SegNet. For that reason I will not update the repository to cuDNN6.
 
 ## Publications
+
 
 If you use this software in your research, please cite their publications:
 
@@ -34,6 +41,7 @@ Vijay Badrinarayanan, Alex Kendall and Roberto Cipolla "SegNet: A Deep Convoluti
 
 
 ## License
+
 
 This extension to the Caffe library is released under a creative commons license which allows for personal and research use only. For a commercial license please contact the authors. You can view a license summary here:
 http://creativecommons.org/licenses/by-nc/4.0/

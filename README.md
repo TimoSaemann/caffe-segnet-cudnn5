@@ -22,11 +22,11 @@ The `Makefile` provided here is modified to work with OpenCV3, and the Makefile.
 
 ## News
 
-* If SegNet is too slow for you, try out the [ENet](https://github.com/TimoSaemann/ENet) in Caffe. It's much faster! (May the 30th, 2017)
+* If SegNet is too slow for you, try out the [ENet](https://github.com/TimoSaemann/ENet) in Caffe. It's much faster! (May 30th, 2017)
 
-* Speed up SegNet by merging batch normalization and convolutional layer with BN-absorber.py in the script folder. (May the 12th, 2017)
+* Speed up SegNet by merging batch normalization and convolutional layer with BN-absorber.py in the script folder. (May 12th, 2017)
 
-* cuDNN v.6 has been released. I have tested it using Titan X Pascal. It doesn't bring any noticeable improvements for SegNet. For that reason I will not update the repository to cuDNN6.
+* cuDNN v.6 has been released. I have tested it using Titan X Pascal. It doesn't bring any noticeable improvements for SegNet. For that reason will not update the repository to cuDNN6.
 
 ## Publications
 

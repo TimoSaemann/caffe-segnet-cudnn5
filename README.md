@@ -16,9 +16,30 @@ https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Scripts/test_segment
 
 ## Installation
 
+### Makefile
+
 To install, follow the instructions located [here](https://github.com/BVLC/caffe/wiki/Ubuntu-16.04-Installation-Guide).
 
 The `Makefile` provided here is modified to work with OpenCV3, and the Makefile.config has been modified to work with CUDA9.0. If you do not wish to use this config, overwrite `Makefile.config` with `Makefile.config.example` and make the necessary modifications.
+
+__This method is recommended if you wish to use Caffe with Python!__ Make sure to add the `caffe-segnet-cudnn7/python` folder to your `PYTHONPATH`.
+
+### CMake
+
+To install Caffe using the community-created CMake file, perform the following:
+
+__Note: This will install Caffe to `/usr/local`.__ If you wish to install it elsewhere, set the `CMAKE_INSTALL_PREFIX`.
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+make runtest
+sudo make install
+```
+
+__This method is recommended if you wish to use Caffe with C++!__ 
 
 ## News
 

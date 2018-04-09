@@ -31,8 +31,8 @@ To install Caffe using the community-created CMake file, perform the following:
 __Note: This will install Caffe to `/usr/local`.__ If you wish to install it elsewhere, set the `CMAKE_INSTALL_PREFIX`.
 
 ```bash
-mkdir build
-cd build
+mkdir cmake_build
+cd cmake_build
 cmake ..
 make
 make runtest

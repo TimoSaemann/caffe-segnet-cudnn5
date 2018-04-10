@@ -20,7 +20,11 @@ https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Scripts/test_segment
 
 To install, follow the instructions located [here](https://github.com/BVLC/caffe/wiki/Ubuntu-16.04-Installation-Guide).
 
-The `Makefile` provided here is modified to work with OpenCV3, and the Makefile.config has been modified to work with CUDA9.0. If you do not wish to use this config, overwrite `Makefile.config` with `Makefile.config.example` and make the necessary modifications.
+A lot of the necessary changes to the Makefile have already been made here. The above guide does, however, provide a good reference for installation dependencies and build steps. 
+
+Some tips for modifying the Makefile:
+    - If you are using ROS and OpenCV, the location of the OpenCV (as of Ubuntu 16.04 and ROS Kinetic `/opt/ros/kinetic/include/opencv-3.3.1-dev` and `/opt/ros/kinetic/include`) needs to be appended to `INCLUDE_DIRS` and `LIBRARY_DIRS`
+    - 
 
 __This method is recommended if you wish to use Caffe with Python!__ Make sure to add the `caffe-segnet-cudnn7/python` folder to your `PYTHONPATH`.
 
@@ -39,7 +43,21 @@ make runtest
 sudo make install
 ```
 
-__This method is recommended if you wish to use Caffe with C++!__ 
+The CMake file currently does not build the Python layer, but this can be modified inside the CMakeLists file. I have not tested this, personally. 
+
+__This method is recommended if you wish to use Caffe with C++!__.
+
+To use `caffe-segnet-cudnn7` in a CMake project, you can now add the following lines to your project's `CMakeLists.txt`:
+
+```cmake
+project(foo)
+
+find_package(Caffe REQUIRED)
+include_directories(${Caffe_INCLUDE_DIRS})
+
+add_executable(foo main.cpp)
+target_link_libraries(foo ${Caffe_LIBRARIES})
+```
 
 ## News
 

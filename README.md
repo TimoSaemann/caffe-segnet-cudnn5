@@ -12,7 +12,7 @@ It is recommended to use Timo Sämann's weights (trained on CityScapes) for sema
 If you like to speed up SegNet even further, you can run the BN-absorber.py script. It merges the batch normalization layer into the convolutional layer by modifying its weights and biases. In doing so, it is possible to accelerate it by around 30 %. Please find BN-absorber.py in the script folder.
 
 If you like to use SegNet with C++, the test_segmentation.cpp might be helpful.
-https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Scripts/test_segmentation.cpp
+https://github.com/navganti/SegNet/blob/master/scripts/example/test_segmentation.cpp
 
 ## Installation
 

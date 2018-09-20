@@ -25,7 +25,7 @@ __This method is recommended if you wish to use Caffe with Python!__ Make sure t
 Some of the necessary changes to the Makefile have already been made, however, the above guide does provide a good reference for installation dependencies and build steps.
 
 Some tips for modifying the Makefile:
-    - If you are using ROS and OpenCV, the location of the OpenCV (as of Ubuntu 16.04 and ROS Kinetic `/opt/ros/kinetic/include/opencv-3.3.1-dev` and `/opt/ros/kinetic/include`) needs to be appended to `INCLUDE_DIRS` and `LIBRARY_DIRS`
+    - If you are using ROS and OpenCV, the location of the OpenCV (as of Ubuntu 16.04 and ROS Kinetic `/opt/ros/kinetic/include/opencv-3.3.1-dev` and `/opt/ros/kinetic/lib/x86_64-linux-gnu`) needs to be appended to `INCLUDE_DIRS` and `LIBRARY_DIRS`
 
 ### CMake
 

@@ -7,7 +7,7 @@ Please refer to Alex Kendall's caffe-segnet for tutorial and a guide how to use 
 
 Since the original caffe-segnet supports just cuDNN v2, which is not supported for new pascal based GPUs, [Timo Sämann](https://github.com/TimoSaemann) was able to decrease the inference time by 25 % to 35 % with [caffe-segnet-cudnn5](https://github.com/TimoSaemann/caffe-segnet-cudnn5) using Titan X Pascal. This repository contains the changes required to run using cudNN7, however no calculation of speedup was performed.
 
-It is recommended to use Timo Sämann's weights (trained on CityScapes) for semantic segmenation of traffic scenes, which you can find in the [SegNet Model Zoo](https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Example_Models/segnet_model_zoo.md).
+A number of different weights can be found in the [SegNet Model Zoo](https://github.com/alexgkendall/SegNet-Tutorial/blob/master/Example_Models/segnet_model_zoo.md). It is recommended to use Timo Sämann's weights (trained on CityScapes) for semantic segmenation of traffic scenes.
 
 If you like to speed up SegNet even further, you can run the BN-absorber.py script. It merges the batch normalization layer into the convolutional layer by modifying its weights and biases. In doing so, it is possible to accelerate it by around 30 %. Please find BN-absorber.py in the script folder.
 
@@ -16,7 +16,18 @@ https://github.com/navganti/SegNet/blob/master/scripts/example/test_segmentation
 
 ## Installation
 
-### CMake
+### Makefile
+
+__This method is recommended if you wish to use Caffe with Python!__ Make sure to add the `caffe-segnet-cudnn7/python` folder to your `PYTHONPATH`.
+
+To install, follow the instructions located [here](https://github.com/BVLC/caffe/wiki/Ubuntu-16.04-Installation-Guide).
+
+A lot of the necessary changes to the Makefile have already been made here. The above guide does, however, provide a good reference for installation dependencies and build steps. 
+
+Some tips for modifying the Makefile:
+    - If you are using ROS and OpenCV, the location of the OpenCV (as of Ubuntu 16.04 and ROS Kinetic `/opt/ros/kinetic/include/opencv-3.3.1-dev` and `/opt/ros/kinetic/include`) needs to be appended to `INCLUDE_DIRS` and `LIBRARY_DIRS`
+    
+    ### CMake
 
 __This method is recommended if you wish to use Caffe with C++!__.
 
@@ -46,17 +57,6 @@ include_directories(${Caffe_INCLUDE_DIRS})
 add_executable(foo main.cpp)
 target_link_libraries(foo ${Caffe_LIBRARIES})
 ```
-
-### Makefile
-
-__This method is recommended if you wish to use Caffe with Python!__ Make sure to add the `caffe-segnet-cudnn7/python` folder to your `PYTHONPATH`.
-
-To install, follow the instructions located [here](https://github.com/BVLC/caffe/wiki/Ubuntu-16.04-Installation-Guide).
-
-A lot of the necessary changes to the Makefile have already been made here. The above guide does, however, provide a good reference for installation dependencies and build steps. 
-
-Some tips for modifying the Makefile:
-    - If you are using ROS and OpenCV, the location of the OpenCV (as of Ubuntu 16.04 and ROS Kinetic `/opt/ros/kinetic/include/opencv-3.3.1-dev` and `/opt/ros/kinetic/include`) needs to be appended to `INCLUDE_DIRS` and `LIBRARY_DIRS`
 
 ## News
 

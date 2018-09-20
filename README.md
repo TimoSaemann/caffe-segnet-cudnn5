@@ -1,9 +1,7 @@
 # Caffe SegNet cuDNN7
 **This is a modified version of [Caffe](https://github.com/BVLC/caffe) which supports the [SegNet architecture](http://mi.eng.cam.ac.uk/projects/segnet/)**.
 
-As described in **SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation** Vijay Badrinarayanan, Alex Kendall and Roberto Cipolla [http://arxiv.org/abs/1511.00561]
-
-Please refer to Alex Kendall's caffe-segnet for tutorial and a guide how to use it (https://github.com/alexgkendall/caffe-segnet).
+Alex Kendall's original `caffe-segnet` repository can be found [here](https://github.com/alexgkendall/caffe-segnet). For a more detailed introduction to this software please see the tutorial [here](http://mi.eng.cam.ac.uk/projects/segnet/tutorial.html).
 
 Since the original caffe-segnet supports just cuDNN v2, which is not supported for new pascal based GPUs, [Timo Sämann](https://github.com/TimoSaemann) was able to decrease the inference time by 25 % to 35 % with [caffe-segnet-cudnn5](https://github.com/TimoSaemann/caffe-segnet-cudnn5) using Titan X Pascal. This repository contains the changes required to run using cudNN7, however no calculation of speedup was performed.
 
@@ -57,24 +55,13 @@ include_directories(${Caffe_INCLUDE_DIRS})
 add_executable(foo main.cpp)
 target_link_libraries(foo ${Caffe_LIBRARIES})
 ```
-
-## News
-
-* If SegNet is too slow for you, try out the [ENet](https://github.com/TimoSaemann/ENet) in Caffe. It's much faster! (May 30th, 2017)
-
-* Speed up SegNet by merging batch normalization and convolutional layer with BN-absorber.py in the script folder. (May 12th, 2017)
-
-* cuDNN v.6 has been released. I have tested it using Titan X Pascal. It doesn't bring any noticeable improvements for SegNet. For that reason will not update the repository to cuDNN6.
-
 ## Publications
 
-If you use this software in your research, please cite their publications:
+If you use this software in your research, please cite:
 
-http://arxiv.org/abs/1511.02680
-Alex Kendall, Vijay Badrinarayanan and Roberto Cipolla "Bayesian SegNet: Model Uncertainty in Deep Convolutional Encoder-Decoder Architectures for Scene Understanding." arXiv preprint arXiv:1511.02680, 2015.
+Alex Kendall, Vijay Badrinarayanan and Roberto Cipolla __"Bayesian SegNet: Model Uncertainty in Deep Convolutional Encoder-Decoder Architectures for Scene Understanding."__ arXiv preprint arXiv:1511.02680, 2015. [PDF](http://arxiv.org/abs/1511.02680).
 
-http://arxiv.org/abs/1511.00561
-Vijay Badrinarayanan, Alex Kendall and Roberto Cipolla "SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation." arXiv preprint arXiv:1511.00561, 2015.
+Vijay Badrinarayanan, Alex Kendall and Roberto Cipolla __"SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation."__ PAMI, 2017. [PDF](http://arxiv.org/abs/1511.00561).
 
 ## License
 
